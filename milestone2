@@ -1,0 +1,172 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+#define CAT_NAME_LEN 25
+#define APP_NAME_LEN 50
+#define VERSION_LEN 10
+#define UNIT_SIZE 3
+
+struct categories {
+	string category;
+	struct tree* root;
+};
+
+
+struct app_info {
+	string category;  // name of category
+	string app_name; // app
+	string version;  // version
+	float size;
+	string units;  //Gig or mega
+	float price; // price in $
+};
+
+struct hash_table_entry {
+	string app_name;  // name of app
+	struct tree* app_node;    // pointer to node in tree containing the application info.
+	struct hash_table_entry* next;  //pointer to next entry in chain
+};
+
+struct tree {
+	struct app_info record;
+	struct tree* left;
+	struct tree* right;
+};
+
+bool nextPrimeNumber(int val) {
+	int counter = 0; 
+	for (int i = 2; i <= val / 2; i++) 
+		if (val % i == 0)
+			counter++;
+
+		if (counter == 0)
+			return true;
+		else
+			return false;
+}
+
+tree* treemake(app_info app) {
+	tree* root = new tree();
+	root->record = app;
+	root->right = NULL;
+	
+	return root;
+}
+
+void insert_node(tree*& root, app_info app)
+{
+	if (root == NULL)
+	{
+		root = treemake(app);
+		return;
+	}
+	if ((root->record.app_name.compare(app.app_name)) < 0)
+	{
+		insert_node(root->right, app);
+	}
+	else
+	{
+		insert_node(root->left, app);
+	}
+
+}
+
+
+
+int findKey(string appName, int size) {
+	string application = appName;
+	char character;
+	int total = 0;
+	int key = 0;
+	
+	for (int i = 0; i < application.size(); i++) {
+		character = application[i];
+		total += int(character);
+	}
+
+	key = total % size;
+	return key;
+}
+
+class MyAppStore {
+	struct categories* category_array;
+	struct app_info* app_array;
+	struct hash_table_entry** hash_table;
+
+public:
+	MyAppStore() {
+
+		string category_line;
+		string newLineChar;
+		int k, m;
+		int n = 0;
+		cin >> n;
+		getline(cin, newLineChar);
+
+		category_array = new categories[n];
+
+		for (int i = 0; i < n; i++) {
+			getline(cin, category_array[i].category);
+			treemake(app_array);
+		}
+
+		cin >> m;
+		getline(cin, newLineChar);
+		app_array = new app_info[m];
+
+		for (int i = 0; i < m; i++) {
+			int j = 0;
+
+			getline(cin, app_array[i].category);
+
+			getline(cin, app_array[i].app_name);
+
+			getline(cin, app_array[i].version);
+
+			cin >> app_array[i].size;
+			getline(cin, newLineChar);
+
+			getline(cin, app_array[i].units);
+
+			cin >> app_array[i].price;
+			getline(cin, newLineChar);
+
+			for (int i = 0; i < m; i++) {
+				if (category_array[i].category == app_array[j].category)
+					insert_node(category_array[i].root, app_array[j]);
+			}
+
+			j++;
+
+		}
+
+
+
+		for (k = m * 2; !nextPrimeNumber(k); k++);
+		hash_table = new hash_table_entry * [k];
+
+
+
+
+
+
+
+
+
+	}
+};
+
+
+
+
+
+int main(int argc, char **argv){
+	MyAppStore appstore = MyAppStore();
+	return 0;
+	
+}
+
+
+
